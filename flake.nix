@@ -10,7 +10,7 @@
       nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; });
     in
     {
-      nixosModules.amazon-cloudwatch-agent = import ./module.nix self;
+      nixosModules.default = import ./module.nix self;
 
       packages = forAllSystems (system:
         let
@@ -19,6 +19,8 @@
         {
           amazon-cloudwatch-agent = pkgs.callPackage ./package.nix {};
         });
+
+      defaultPackage = forAllSystems (system: self.packages.${system}.amazon-cloudwatch-agent);
 
       devShells = forAllSystems (system:
         let
@@ -30,6 +32,5 @@
           };
         });
 
-      defaultPackage = forAllSystems (system: self.packages.${system}.amazon-cloudwatch-agent);
     };
 }

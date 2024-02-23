@@ -42,16 +42,23 @@ in
     users.groups.cwagent = { };
 
     systemd.services.amazon-cloudwatch-agent = {
-      description = "amazon-cloudwatch-agent";
+      enable = true;
+      description = "Amazon CloudWatch Agent";
       documentation = [ "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Install-CloudWatch-Agent.html" ];
 
       after = [ "network-online.target" ];
       wantedBy = [ "multi-user.target" ];
 
+      unitConfig = {
+        Type = "simple";
+      };
+
       serviceConfig = {
+        Restart = "on-failure";
+        RestartSec = 60;
+        KillMode="process";
         User = "cwagent";
         Group = "cwagent";
-        Restart = "always";
         ExecStart = "${lib.getBin cfg.package}/bin/start-amazon-cloudwatch-agent  -c \"${config.services.amazon-cloudwatch-agent.dataDir}\"";
       };
 
