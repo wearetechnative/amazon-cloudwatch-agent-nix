@@ -58,7 +58,6 @@ in
       preStart = ''
         installedConfigFile="${config.services.amazon-cloudwatch-agent.dataDir}/config.json"
         install -d -m750 ${config.services.amazon-cloudwatch-agent.dataDir}/logs
-        #rm -f "$installedConfigFile" && install -m640 ${configFile} "$installedConfigFile"
       '';
     };
   };
