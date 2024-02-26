@@ -70,7 +70,6 @@ buildGoModule rec {
     cp cfg/commonconfig/common-config.toml $out/etc/
 
     # TODO in patchPhase
-    substituteInPlace $out/bin/amazon-cloudwatch-agent-ctl --replace /opt/aws/amazon-cloudwatch-agent "$out"
 
     mkdir -p /tmp/amazon-cloudwatch-agent
     touch /tmp/amazon-cloudwatch-agent/amazon-cloudwatch-agent.log
