@@ -58,7 +58,7 @@ in
       serviceConfig = {
         Restart = "on-failure";
         RestartSec = 60;
-        KillMode="process";
+        KillMode="control-group";
         User = "root";
         Group = "root";
         ExecStart = "${lib.getBin cfg.package}/bin/start-amazon-cloudwatch-agent  -c \"${config.services.amazon-cloudwatch-agent.dataDir}\"";
