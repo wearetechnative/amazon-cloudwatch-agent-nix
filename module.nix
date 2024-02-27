@@ -6,6 +6,8 @@ let
   inherit (flake.packages.${pkgs.stdenv.hostPlatform.system}) amazon-cloudwatch-agent;
 
   cfg = config.services.amazon-cloudwatch-agent;
+
+  initConfigFile = ./config.json;
 in
 {
   options = {
@@ -33,13 +35,13 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    users.users.cwagent = {
-      description = "amazon-cloudwatch-agent daemon user";
-      isSystemUser = true;
-      group = "cwagent";
-    };
-
-    users.groups.cwagent = { };
+#    users.users.cwagent = {
+#      description = "amazon-cloudwatch-agent daemon user";
+#      isSystemUser = true;
+#      group = "cwagent";
+#    };
+#
+#    users.groups.cwagent = { };
 
     systemd.services.amazon-cloudwatch-agent = {
       enable = true;
@@ -63,8 +65,25 @@ in
       };
 
       preStart = ''
-        installedConfigFile="${config.services.amazon-cloudwatch-agent.dataDir}/config.json"
-        install -d -m750 ${config.services.amazon-cloudwatch-agent.dataDir}/logs
+
+        install -d -m750 ${config.services.amazon-cloudwatch-agent.dataDir}/{bin,var,logs,etc}
+        install -d -m750 ${config.services.amazon-cloudwatch-agent.dataDir}/etc/amazon-cloudwatch-agent.d
+
+        ln -sf ${initConfigFile} ${config.services.amazon-cloudwatch-agent.dataDir}/config.json
+        ln -sf ${lib.getBin cfg.package}/etc/common-config.toml ${config.services.amazon-cloudwatch-agent.dataDir}/etc/common-config.toml
+
+        ln -sf ${lib.getBin cfg.package}/bin/config-translator ${config.services.amazon-cloudwatch-agent.dataDir}/bin/config-translator
+        ln -sf ${lib.getBin cfg.package}/bin/config-downloader ${config.services.amazon-cloudwatch-agent.dataDir}/bin/config-downloader
+        ln -sf ${lib.getBin cfg.package}/bin/amazon-cloudwatch-agent ${config.services.amazon-cloudwatch-agent.dataDir}/bin/amazon-cloudwatch-agent
+        ln -sf ${lib.getBin cfg.package}/bin/amazon-cloudwatch-agent-ctl ${config.services.amazon-cloudwatch-agent.dataDir}/bin/amazon-cloudwatch-agent-ctl
+
+        /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/config.json
+
+        # GEN /opt/aws/amazon-cloudwatch-agent/etc/env-config.json
+        # GEN /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.d/file_config.json
+        # GEN /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.yaml
+        # GEN /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.toml
+
       '';
     };
   };

@@ -5,6 +5,12 @@
   },
   "metrics": {
     "metrics_collected": {
+      "disk": {
+        "measurement": [
+          "disk_used_percent"
+        ],
+        "metrics_collection_interval": 60
+      },
       "mem": {
         "measurement": [
           "mem_used_percent"
