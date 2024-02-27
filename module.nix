@@ -51,9 +51,9 @@ in
       after = [ "network-online.target" ];
       wantedBy = [ "multi-user.target" ];
 
-      unitConfig = {
-        Type = "simple";
-      };
+#      unitConfig = {
+#        Type = "simple";
+#      };
 
       serviceConfig = {
         Restart = "on-failure";
