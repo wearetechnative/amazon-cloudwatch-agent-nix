@@ -77,7 +77,7 @@ in
         ln -sf ${lib.getBin cfg.package}/bin/amazon-cloudwatch-agent ${config.services.amazon-cloudwatch-agent.dataDir}/bin/amazon-cloudwatch-agent
         ln -sf ${lib.getBin cfg.package}/bin/amazon-cloudwatch-agent-ctl ${config.services.amazon-cloudwatch-agent.dataDir}/bin/amazon-cloudwatch-agent-ctl
 
-        ${config.services.amazon-cloudwatch-agent.dataDir}/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/config.json
+        ${config.services.amazon-cloudwatch-agent.dataDir}/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/config.json
 
         # GEN /opt/aws/amazon-cloudwatch-agent/etc/env-config.json
         # GEN /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.d/file_config.json
