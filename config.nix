@@ -1,9 +1,4 @@
-flake: {
-  lib,
-  pkgs,
-  config,
-  ...
-}:
+flake: { config, lib, pkgs, ... }:
 let
   cfg = config.services.amazon-cloudwatch-agent;
 
