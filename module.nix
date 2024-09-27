@@ -113,6 +113,13 @@ in
       '';
       example = "onPremise";
     };
+    dataDir = mkOption {
+      type = types.str;
+      default = "/opt/aws/amazon-cloudwatch-agent";
+      description = lib.mdDoc ''
+        The path where amazon-cloudwatch-agent keeps its config, and logs.
+      '';
+    };
   };
   # options = {
   #   services.amazon-cloudwatch-agent = {
