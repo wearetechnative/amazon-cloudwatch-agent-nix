@@ -2,6 +2,7 @@
   description = "Amazon CloudWatch Agent for NixOS";
 
   inputs.nixpkgs.url = "nixpkgs/nixos-23.11";
+  
 
   outputs = { self, nixpkgs }:
     let
@@ -10,7 +11,7 @@
       nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; });
     in
     {
-      nixosModules.default = import ./module.nix self;
+      nixosModules.default = import ./config.nix self;
 
       packages = forAllSystems (system:
         let
