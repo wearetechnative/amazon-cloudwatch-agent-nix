@@ -10,29 +10,128 @@ let
   initConfigFile = ./config.json;
 in
 {
-  options = {
-    services.amazon-cloudwatch-agent = {
-      enable = mkEnableOption ''
-        Amazon CloudWatch Amazon
+  options.services.amazon-cloudwatch-agent = {
+    enable = lib.mkEnableOption "Amazon CloudWatch Agent";
+    package = lib.mkPackageOption pkgs "amazon-cloudwatch-agent" { };
+    commonConfiguration = lib.mkOption {
+      type = tomlFormat.type;
+      default = { };
+      description = ''
+        Amazon CloudWatch Agent common configuration. See
+        <https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/install-CloudWatch-Agent-commandline-fleet.html#CloudWatch-Agent-profile-instance-first>
+        for supported values.
       '';
-
-      dataDir = mkOption {
-        type = types.str;
-        default = "/opt/aws/amazon-cloudwatch-agent";
-        description = lib.mdDoc ''
-          The path where amazon-cloudwatch-agent keeps its config, and logs.
-        '';
-      };
-
-      package = mkOption {
-        type = types.package;
-        default = amazon-cloudwatch-agent;
-        description = ''
-          The package to use with the service.
-        '';
+      example = {
+        credentials = {
+          shared_credential_profile = "{profile_name}";
+          shared_credential_file = "{file_name}";
+        };
+        proxy = {
+          http_proxy = "{http_url}";
+          https_proxy = "{https_url}";
+          no_proxy = "{domain}";
+        };
       };
     };
+    configuration = lib.mkOption {
+      type = jsonFormat.type;
+      default = { };
+      description = ''
+        Amazon CloudWatch Agent configuration. See
+        <https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Agent-Configuration-File-Details.html>
+        for supported values.
+      '';
+      # Subset of "CloudWatch agent configuration file: Complete examples" and "CloudWatch agent configuration file: Traces section" in the description link.
+      #
+      # Log file path changed from "/opt/aws/amazon-cloudwatch-agent/logs" to "/var/log/amazon-cloudwatch-agent".
+      example = {
+        agent = {
+          metrics_collection_interval = 10;
+          logfile = "/var/log/amazon-cloudwatch-agent/amazon-cloudwatch-agent.log";
+        };
+        metrics = {
+          namespace = "MyCustomNamespace";
+          metrics_collected = {
+            cpu = {
+              resource = [ "*" ];
+              measurement = [
+                {
+                  name = "cpu_usage_idle";
+                  rename = "CPU_USAGE_IDLE";
+                  unit = "Percent";
+                }
+                {
+                  name = "cpu_usage_nice";
+                  unit = "Percent";
+                }
+                "cpu_usage_guest"
+              ];
+              totalcpu = false;
+              metrics_collection_interval = 10;
+              append_dimensions = {
+                customized_dimension_key_1 = "customized_dimension_value_1";
+                customized_dimension_key_2 = "customized_dimension_value_2";
+              };
+            };
+          };
+        };
+        logs = {
+          logs_collected = {
+            files = {
+              collect_list = [
+                {
+                  file_path = "/var/log/amazon-cloudwatch-agent/amazon-cloudwatch-agent.log";
+                  log_group_name = "amazon-cloudwatch-agent.log";
+                  log_stream_name = "amazon-cloudwatch-agent.log";
+                  timezone = "UTC";
+                }
+              ];
+            };
+          };
+          log_stream_name = "my_log_stream_name";
+          force_flush_interval = 15;
+        };
+        traces = {
+          traces_collected = {
+            xray = { };
+            oltp = { };
+          };
+        };
+      };
+    };
+    mode = lib.mkOption {
+      type = lib.types.str;
+      default = "auto";
+      description = ''
+        Amazon CloudWatch Agent mode. Indicates whether the agent is running in EC2 ("ec2"), on-premises ("onPremise"),
+        or if it should guess based on metadata endpoints like IMDS or the ECS task metadata endpoint ("auto").
+      '';
+      example = "onPremise";
+    };
   };
+  # options = {
+  #   services.amazon-cloudwatch-agent = {
+  #     enable = mkEnableOption ''
+  #       Amazon CloudWatch Amazon
+  #     '';
+
+  #     dataDir = mkOption {
+  #       type = types.str;
+  #       default = "/opt/aws/amazon-cloudwatch-agent";
+  #       description = lib.mdDoc ''
+  #         The path where amazon-cloudwatch-agent keeps its config, and logs.
+  #       '';
+  #     };
+
+  #     package = mkOption {
+  #       type = types.package;
+  #       default = amazon-cloudwatch-agent;
+  #       description = ''
+  #         The package to use with the service.
+  #       '';
+  #     };
+  #   };
+  # };
 
   config = lib.mkIf cfg.enable {
 #    users.users.cwagent = {

@@ -11,7 +11,7 @@
       nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; });
     in
     {
-      nixosModules.default = import ./config.nix self;
+      nixosModules.default = import ./module.nix self;
 
       packages = forAllSystems (system:
         let
