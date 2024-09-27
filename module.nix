@@ -120,6 +120,13 @@ in
         The path where amazon-cloudwatch-agent keeps its config, and logs.
       '';
     };
+    package = mkOption {
+      type = types.package;
+      default = amazon-cloudwatch-agent;
+      description = ''
+        The package to use with the service.
+      '';
+    };
   };
   # options = {
   #   services.amazon-cloudwatch-agent = {
