@@ -1,4 +1,4 @@
-{
+flake: {
   lib,
   pkgs,
   config,
@@ -175,5 +175,5 @@ in
     };
   };
 
-  meta.maintainers = pkgs.amazon-cloudwatch-agent.meta.maintainers;
+#   meta.maintainers = pkgs.amazon-cloudwatch-agent.meta.maintainers;
 }
