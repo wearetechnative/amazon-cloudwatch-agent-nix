@@ -12,7 +12,7 @@ let
   commonConfigurationFile = tomlFormat.generate "common-config.toml" cfg.commonConfiguration;
   configurationFile = jsonFormat.generate "amazon-cloudwatch-agent.json" cfg.configuration;
 
-  initConfigFile = ./config.json;
+  initConfigFile = ./test_config.json;
 in
 {
   options.services.amazon-cloudwatch-agent = {
