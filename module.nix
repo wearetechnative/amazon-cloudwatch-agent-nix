@@ -6,6 +6,11 @@ let
   inherit (flake.packages.${pkgs.stdenv.hostPlatform.system}) amazon-cloudwatch-agent;
 
   cfg = config.services.amazon-cloudwatch-agent;
+  tomlFormat = pkgs.formats.toml { };
+  jsonFormat = pkgs.formats.json { };
+
+  commonConfigurationFile = tomlFormat.generate "common-config.toml" cfg.commonConfiguration;
+  configurationFile = jsonFormat.generate "amazon-cloudwatch-agent.json" cfg.configuration;
 
   initConfigFile = ./config.json;
 in
