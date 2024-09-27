@@ -17,7 +17,7 @@ in
 {
   options.services.amazon-cloudwatch-agent = {
     enable = lib.mkEnableOption "Amazon CloudWatch Agent";
-    package = lib.mkPackageOption pkgs "amazon-cloudwatch-agent" { };
+    # package = lib.mkPackageOption pkgs "amazon-cloudwatch-agent" { };
     commonConfiguration = lib.mkOption {
       type = tomlFormat.type;
       default = { };
