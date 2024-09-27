@@ -1,5 +1,8 @@
 flake: { config, lib, pkgs, ... }:
 let
+  inherit (lib) types mkEnableOption mkOption;
+
+  inherit (flake.packages.${pkgs.stdenv.hostPlatform.system}) amazon-cloudwatch-agent;
   cfg = config.services.amazon-cloudwatch-agent;
 
   tomlFormat = pkgs.formats.toml { };
