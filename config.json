@@ -12,6 +12,12 @@
             "log_group_name": "/var/log/php",
             "log_stream_name": "{instance_id}/php_log_stream",
             "timezone": "Local"
+          },
+          {
+            "file_path": "/var/log/psqlDatabaseBackup.log",
+            "log_group_name": "/var/log/psqlDatabaseBackup",
+            "log_stream_name": "{instance_id}/psqlDatabaseBackup_log_stream",
+            "timezone": "Local"
           }
         ]
       }
